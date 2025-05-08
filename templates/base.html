@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telethon Web UI</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f8f9fa; padding-top: 20px; }
+        .container-main { max-width: 1580px; margin: 0 auto; padding: 10px; }
+        .login-box { background-color: white; border-radius: 8px; padding: 30px; margin: 40px auto; width: 100%; max-width: 700px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+        .main-box { background-color: white; border-radius: 8px; padding: 20px; margin: 20px 0; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+        .title { font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 25px; font-family: 'Lucida Console', monospace; }
+        .log-box {
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 0.85em;
+            background-color: #fdfdfd;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+        .log-box pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+        .nav-tabs .nav-link { color: #007bff; }
+        .nav-tabs .nav-link.active { color: #495057; background-color: #fff; border-color: #dee2e6 #dee2e6 #fff; }
+        .form-control-sm-custom { height: calc(1.5em + .5rem + 2px); padding: .25rem .5rem; font-size: .875rem; line-height: 1.5; border-radius: .2rem; }
+        .btn-sm-custom { padding: .25rem .5rem; font-size: .875rem; line-height: 1.5; border-radius: .2rem;}
+        .progress { margin-bottom: 10px;}
+        .status-box { width: 100%; min-height: 40px; border: 1px solid #ddd; border-radius: 5px; margin: 10px 0; display: flex; align-items: center; justify-content: center; font-weight: bold; padding: 5px; }
+        .file-list {max-height: 150px; overflow-y:auto; border: 1px solid #eee; padding: 5px;}
+        .section-title { font-size: 20px; text-align: center; margin: 20px 0 15px 0; border-bottom: 1px solid #eee; padding-bottom: 10px;}
+        .user-info-bar { margin-bottom: 15px; padding: 10px; background-color: #e9ecef; border-radius: 5px; text-align: right; }
+    </style>
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+    <div class="container-main">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+
+        <div class="main-box mt-3">
+            <div class="d-flex justify-content-between align-items-center">
+                 <h5>Logs:</h5>
+                 <form action="{{ url_for('clear_logs_route') }}" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">Clear Logs</button>
+                </form>
+            </div>
+            <div class="log-box">
+                {% if logs %}
+                    {% for log_entry in logs %}
+                        <pre>{{ log_entry }}</pre>
+                    {% endfor %}
+                {% else %}
+                    <pre>No log messages yet.</pre>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {% block scripts_extra %}{% endblock %}
+</body>
+</html>

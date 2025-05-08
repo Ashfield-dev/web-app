@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login-box">
+    <div class="title">Connect to Telegram</div>
+    <p class="text-center mb-3">
+        <b>Important:</b> Ensure your session file (e.g., <code>my_account.session</code>) is in the same directory as <code>app.py</code>, or provide a session string.
+    </p>
+    <form method="POST" action="{{ url_for('login_page') }}">
+        <div class="form-group">
+            <label for="api_id">API ID</label>
+            <input type="number" class="form-control" id="api_id" name="api_id" placeholder="Enter API ID" value="{{ api_id or '' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="api_hash">API Hash</label>
+            <input type="text" class="form-control" id="api_hash" name="api_hash" placeholder="Enter API Hash" value="{{ api_hash or '' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="session_type">Session Type</label>
+            <select class="form-control custom-select" id="session_type" name="session_type">
+                <option value="file" {% if session_type_pref == 'file' %}selected{% endif %}>File Session</option>
+                <option value="string" {% if session_type_pref == 'string' %}selected{% endif %}>String Session</option>
+            </select>
+        </div>
+        <div class="form-group" id="session_name_group" {% if session_type_pref == 'string' %}style="display:none;"{% endif %}>
+            <label for="session_name">Session File Name</label>
+            <input type="text" class="form-control" id="session_name" name="session_name" placeholder="e.g., my_colab_account (without .session)" value="{{ session_name or '' }}">
+        </div>
+        <div class="form-group" id="session_string_group" {% if session_type_pref != 'string' %}style="display:none;"{% endif %}>
+            <label for="session_string">Session String</label>
+            <textarea class="form-control" id="session_string" name="session_string" rows="3" placeholder="Paste Session String here"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Connect using Session</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+    document.getElementById('session_type').addEventListener('change', function() {
+        if (this.value === 'file') {
+            document.getElementById('session_name_group').style.display = 'block';
+            document.getElementById('session_string_group').style.display = 'none';
+            document.getElementById('session_name').required = true;
+            document.getElementById('session_string').required = false;
+        } else {
+            document.getElementById('session_name_group').style.display = 'none';
+            document.getElementById('session_string_group').style.display = 'block';
+            document.getElementById('session_name').required = false;
+            document.getElementById('session_string').required = true;
+        }
+    });
+    // Trigger change on load to set initial state and requirements
+    document.getElementById('session_type').dispatchEvent(new Event('change'));
+</script>
+{% endblock %}
